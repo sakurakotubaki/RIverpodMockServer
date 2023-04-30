@@ -1,14 +1,17 @@
+import 'package:api_example/component/push_button.dart';
 import 'package:api_example/model/post.dart';
 import 'package:api_example/repository/post_notifier.dart';
+import 'package:api_example/ui/edit_post.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+/// [リアルタイムデータが更新されるページ]
+/// データが変更されると、画面に表示されているリストの内容がすぐに変わる
 class PostListView extends ConsumerWidget {
   const PostListView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final asyncPosts = ref.watch(postProvider);
+    final asyncPosts = ref.watch(apiProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -35,9 +38,13 @@ class PostsList extends ConsumerWidget {
         itemBuilder: (context, index) {
           final post = apiState.data[index];
           return ListTile(
+            // リストをタップすると詳細ページへ移動する
+            onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => UpdatePost(posts: post)));
+                    },
             title: Text(post.name),
             subtitle: Text('Created at: ${post.createdAt}'),
-            leading: IconButton(
+            trailing: IconButton(
                 onPressed: () {
                   ref.read(apiProvider.notifier).deleteData(post.id);
                 },

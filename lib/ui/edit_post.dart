@@ -11,13 +11,18 @@ final idProvider = StateProvider((ref) {
 final nameProvider = StateProvider((ref) {
   return TextEditingController();
 });
-
+/// [モックサーバーのデータを編集するページ]
+/// 前のページから、Postモデルクラスの値を受け取ることができるので、
+/// idを入力フォームから、直接入力しなくてもid1,id2と指定できる。
 class UpdatePost extends ConsumerWidget {
-  const UpdatePost({super.key});
+  // ListView.builderから値を受け取れるように、コンストラクターを定義する
+  // {super.key, required this.posts}の書き方でないと、前のページから値を受け取れない
+  const UpdatePost({super.key, required this.posts});
+  // 受け取った値を保存する変数を作る
+  final Post posts;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final idController = ref.watch(idProvider);
     final nameController = ref.watch(nameProvider);
 
     return Scaffold(
@@ -29,20 +34,6 @@ class UpdatePost extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
-              width: 300,
-              child: TextFormField(
-                controller: idController,
-                // キーボードのタイプを数字にする
-                keyboardType: TextInputType.number,
-                inputFormatters: [
-                  // 文字数を制限できる
-                  LengthLimitingTextInputFormatter(16),
-                  // 数字のみしか入力させないようにする
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
-              ),
-            ),
-            SizedBox(
                 width: 300,
                 child: TextFormField(
                   controller: nameController,
@@ -51,11 +42,12 @@ class UpdatePost extends ConsumerWidget {
             ElevatedButton(
                 onPressed: () {
                   final updatedPost = Post(
-                    id: idController.text,
+                    id: posts.id,// 前のページから渡されたリストのidを使用
                     name: nameController.text,
                     createdAt: DateTime.now(),
                   );
                   ref.read(apiProvider.notifier).updateData(updatedPost);
+                  nameController.clear();
                 },
                 child: const Text('更新')),
           ],

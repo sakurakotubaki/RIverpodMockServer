@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 
 part 'post.freezed.dart';
 part 'post.g.dart';
-
+/// [モックサーバーで使用するデータ型を定義する]
 @freezed
 class Post with _$Post {
   const factory Post({

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-
+/// [コンポーネント化した画面遷移用のボタン]
+/// ボタンを部品化しておくことで、画面遷移のコードを短くしたり、
+/// 使い回すことで、同じコードを書かなくもすむようになる。
 class PushButton extends StatelessWidget {
   const PushButton({
     super.key,

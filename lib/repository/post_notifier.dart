@@ -3,10 +3,12 @@ import 'package:api_example/model/post.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
+// ApiNotifierをどこからでも使うことができるようにするプロバイダー
 final apiProvider = StateNotifierProvider<ApiNotifier, ApiState>((ref) {
   return ApiNotifier();
 });
 
+// StateNotifierで使用する状態クラス
 class ApiState {
   final List<Post> data;
   final String error;
@@ -14,9 +16,10 @@ class ApiState {
   ApiState({required this.data, required this.error});
 }
 
+// HTTP通信を行うためのロジック
 class ApiNotifier extends StateNotifier<ApiState> {
   ApiNotifier() : super(ApiState(data: [], error: ''));
-
+  // モックサーバーのデータを取得するメソッド
   Future<void> fetchData() async {
     try {
       final response = await http.get(Uri.parse('http://localhost:3000/posts'));
@@ -33,6 +36,7 @@ class ApiNotifier extends StateNotifier<ApiState> {
     }
   }
 
+  // モックサーバーにデータを追加するメソッド
   Future<void> postData(Post post) async {
     try {
       final response = await http.post(
@@ -69,23 +73,18 @@ class ApiNotifier extends StateNotifier<ApiState> {
   }
 
   // データを削除するメソッド
-Future<void> deleteData(String postId) async {
-  try {
-    final response = await http.delete(
-      Uri.parse('http://localhost:3000/posts/$postId'),
-    );
-    if (response.statusCode == 200) {
-      fetchData(); // 更新されたデータを取得します。
-    } else {
-      state = ApiState(data: [], error: 'Error: ${response.statusCode}');
+  Future<void> deleteData(String postId) async {
+    try {
+      final response = await http.delete(
+        Uri.parse('http://localhost:3000/posts/$postId'),
+      );
+      if (response.statusCode == 200) {
+        fetchData(); // 更新されたデータを取得します。
+      } else {
+        state = ApiState(data: [], error: 'Error: ${response.statusCode}');
+      }
+    } catch (e) {
+      state = ApiState(data: [], error: 'Error: $e');
     }
-  } catch (e) {
-    state = ApiState(data: [], error: 'Error: $e');
   }
 }
-
-}
-
-final postProvider = StateNotifierProvider<ApiNotifier, ApiState>((ref) {
-  return ApiNotifier();
-});

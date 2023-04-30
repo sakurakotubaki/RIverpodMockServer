@@ -20,7 +20,6 @@ class HomePage extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             PushButton(buttonTitle: 'データを追加', pageName: const AddPost()),
-            PushButton(buttonTitle: 'データを更新', pageName: const UpdatePost()),
             PushButton(buttonTitle: '一度だけデータを取得', pageName: const FuturePost()),
             PushButton(buttonTitle: 'リアルタイム', pageName: const PostListView()),
           ],

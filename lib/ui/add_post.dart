@@ -11,7 +11,7 @@ final idProvider = StateProvider((ref) {
 final nameProvider = StateProvider((ref) {
   return TextEditingController();
 });
-
+/// [モックサーバーにデータを追加するページ]
 class AddPost extends ConsumerWidget {
   const AddPost({super.key});
 
@@ -43,19 +43,25 @@ class AddPost extends ConsumerWidget {
               ),
             ),
             SizedBox(
-              width: 300,
-              child: TextFormField(
-                controller: nameController,
-              )),
-              const SizedBox(height: 20),
-            ElevatedButton(onPressed: () {
-              final newPost = Post(
-            id: idController.text,
-            name: nameController.text,
-            createdAt: DateTime.now(),
-          );
-          ref.read(apiProvider.notifier).postData(newPost);
-            }, child: const Text('新規作成'))
+                width: 300,
+                child: TextFormField(
+                  controller: nameController,
+                )),
+            const SizedBox(height: 20),
+            ElevatedButton(
+                onPressed: () {
+                  final newPost = Post(
+                    id: idController.text,
+                    name: nameController.text,
+                    createdAt: DateTime.now(),
+                  );
+                  ref.read(apiProvider.notifier).postData(newPost);
+                  // clearメソッドを使用すると、入力フォームに残っていまうテキストを消すことができる。
+                  // 消さないと、他の入力ページで出てくることがある。
+                  idController.clear();
+                  nameController.clear();
+                },
+                child: const Text('新規作成'))
           ],
         ),
       ),
